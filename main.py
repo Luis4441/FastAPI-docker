@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 import random
+from pathlib import Path
 
 app = FastAPI(title="Servicio de cédula")
 
@@ -12,7 +13,9 @@ def obtener_cedula() -> int:
 
 @app.get("/swagger.html", response_class=HTMLResponse)
 def swagger_html():
-    with open("swagger.html", "r", encoding="utf-8") as file:
+    ruta_swagger = Path(__file__).parent / "swagger.html"
+
+    with open(ruta_swagger, "r", encoding="utf-8") as file:
         return file.read()
 
 
