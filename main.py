@@ -30,6 +30,11 @@ def obtener_numero_romano() -> str:
     return int_to_roman(numero)
 
 
+@app.get("/duplicar")
+def duplicar_numero(numero: int) -> int:
+    return numero * 2
+
+
 @app.get("/swagger.html", response_class=HTMLResponse)
 def swagger_html():
     ruta_swagger = Path(__file__).parent / "swagger.html"
