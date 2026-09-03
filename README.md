@@ -49,10 +49,36 @@ También puedes consultar la especificación OpenAPI en:
 http://localhost:8000/openapi.json
 ```
 
+Y además el proyecto incluye una vista personalizada en:
+
+```text
+http://localhost:8000/swagger.html
+```
+
 ## Requisitos
 
+- Python 3.12+
 - Docker
 - Docker Compose
+- GitHub
+- Cuenta en Render
+
+## Ejecutar localmente con Python
+
+Desde la raíz del proyecto:
+
+```bash
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python -m uvicorn main:app --host 0.0.0.0 --port 8000
+```
+
+Luego abre:
+
+```text
+http://localhost:8000/obtenercedula
+```
 
 ## Levantar el servicio con Docker Compose
 
@@ -78,6 +104,12 @@ Puedes probarlo con curl:
 curl http://localhost:8000/obtenercedula
 ```
 
+También puedes validar la página Swagger:
+
+```bash
+curl http://localhost:8000/swagger.html
+```
+
 ## Detener el servicio
 
 ```bash
@@ -100,9 +132,56 @@ Se incluye una colección lista para importar en Postman en el archivo:
 ## Estructura del proyecto
 
 - [main.py](main.py) — aplicación FastAPI
+- [swagger.html](swagger.html) — interfaz Swagger personalizada
 - [Dockerfile](Dockerfile) — imagen del contenedor
 - [docker-compose.yml](docker-compose.yml) — configuración de ejecución
 - [requirements.txt](requirements.txt) — dependencias
+- [.github/workflows/render-deploy.yml](.github/workflows/render-deploy.yml) — despliegue continuo con GitHub Actions hacia Render
+
+## Despliegue continuo con GitHub Actions y Render
+
+Este repositorio incluye un workflow de GitHub Actions para desplegar automáticamente en Render:
+
+- Archivo: [.github/workflows/render-deploy.yml](.github/workflows/render-deploy.yml)
+
+### Configuración necesaria
+
+1. En Render, crea o selecciona tu servicio web.
+2. Copia la URL del Deploy Hook.
+3. En GitHub, ve a:
+   - Settings → Secrets and variables → Actions
+4. Crea el secreto:
+   - `RENDER_DEPLOY_HOOK_URL`
+5. Pega ahí el Deploy Hook de Render.
+
+### Qué hace el workflow
+
+- Se ejecuta en cada push a la rama `main`
+- También puede ejecutarse manualmente con `workflow_dispatch`
+- Llama al Deploy Hook de Render usando `curl` para disparar el despliegue
+
+Ejemplo del workflow:
+
+```yaml
+name: Deploy to Render
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Render
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          curl --fail --silent --show-error -X POST "$RENDER_DEPLOY_HOOK_URL"
+```
 
 ## Ejemplo de request en Postman
 
@@ -112,4 +191,4 @@ Se incluye una colección lista para importar en Postman en el archivo:
 
 ## Nota
 
-La app está diseñada para ejecutarse en un contenedor y puede ser accesada desde el puerto 8000 del host.
+La app está diseñada para ejecutarse en un contenedor y puede ser accesada desde el puerto 8000 del host. Además, incluye una automatización básica para despliegues continuos en Render usando GitHub Actions.
