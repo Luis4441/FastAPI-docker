@@ -1,7 +1,9 @@
-from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+import os
 import random
 from pathlib import Path
+
+from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 
 app = FastAPI(title="Servicio de cédula")
 
@@ -46,4 +48,5 @@ def swagger_html():
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    host = os.getenv("HOST", "127.0.0.1")
+    uvicorn.run("main:app", host=host, port=8000, reload=True)
