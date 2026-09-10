@@ -1,0 +1,15 @@
+# requirements.lock
+# This file is intended to contain pinned packages and their hashes for
+# reproducible, secure installs. Populate the hash values using:
+#   pip hash <wheel-or-sdist>
+# or use `pip-compile --generate-hashes` from pip-tools to create a
+# hash-locked requirements file.
+#
+# Example format (hash entries required for --require-hashes):
+# fastapi==0.115.0 \
+#     --hash=sha256:...
+# uvicorn[standard]==0.30.6 \
+#     --hash=sha256:...
+
+fastapi==0.115.0
+uvicorn[standard]==0.30.6

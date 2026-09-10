@@ -1,5 +1,5 @@
 import os
-import random
+import secrets
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -22,13 +22,16 @@ def int_to_roman(number: int) -> str:
 
 @app.get("/obtenercedula")
 def obtener_cedula() -> int:
-    return random.randint(1_000_000_000, 9_999_999_999)
+    # Use a cryptographically secure PRNG for identifiers
+    # Range: 1_000_000_000 .. 9_999_999_999 inclusive
+    return secrets.randbelow(9_000_000_000) + 1_000_000_000
 
 
 @app.get("/numeroromano")
 @app.get("/romano")
 def obtener_numero_romano() -> str:
-    numero = random.randint(50, 100)
+    # Secure random integer between 50 and 100 inclusive
+    numero = secrets.randbelow(51) + 50
     return int_to_roman(numero)
 
 
